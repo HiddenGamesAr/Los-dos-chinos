@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,7 +12,6 @@ namespace Los_dos_chinos
     {
 
         public static List<Article> ArtEnCarrito = new();
-        //public static ServerManager serverM = new();
         public static bool firstTime = true;
         public static string tipo;
         public static User user = new();
@@ -19,9 +19,12 @@ namespace Los_dos_chinos
         public static FormLogIn formLogIn;
         public static List<TextBox> textBoxes;
         public static Supermarket supermarket = new ("283373338333","Los dos chinos","Ameghino 234");
+        public static Image logo;
+        static string ubicacionEntorno = Environment.CurrentDirectory;
+        public static string ubicacionProyecto = Directory.GetParent(ubicacionEntorno).Parent.FullName;
         public static string _ConnectionString { get; set; } = "Server=DESKTOP-TAEGQRB\\SQLEXPRESS;" +
             "Database=ChinoDB; Trusted_Connection=True;TrustServerCertificate=True";
-        public static void LoadFormInPanel (Form form, Panel panel)
+        public static void LoadFormInPanel (Form form, Panel panel) //Load a form in a panel
         {
             panel.Controls.Clear();
             form.TopLevel = false;
@@ -31,7 +34,7 @@ namespace Los_dos_chinos
             form.Dock = DockStyle.Fill;
             form.Show();
         }
-        public static void AddData (string table, string columns, List<string> data, string typeOfData)
+        public static void AddData (string table, string columns, List<string> data, string typeOfData) //Add data in a table of a sqlserver databse
         {
             using SqlConnection sqlConnection = new(_ConnectionString);
             sqlConnection.Open();
@@ -50,30 +53,7 @@ namespace Los_dos_chinos
             CleanTxtBoxes();
             MessageBox.Show($"{typeOfData} agregado", "Operación satisfactoria", MessageBoxButtons.OK);
         }
-        public static void ReadSupermarketData ()
-        {
-            using (StreamReader sr = File.OpenText($@"{Application.StartupPath}\supermarketdata.txt"))
-            {
-                string str = sr.ReadToEnd();
-                string[] separators = { "\r\n" };
-                string[] dataSeparated = str.Split(separators, System.StringSplitOptions.None);
-                if (dataSeparated.Length >= 3)
-                {
-                    ServerManager.supermarket.Nombre = dataSeparated[0]; ServerManager.supermarket.CUIT = dataSeparated[1];
-                    ServerManager.supermarket.Direccion = dataSeparated[2];
-                }
-            }
-        }
-        public static void UpdateSupermarketData ()
-        {
-            using (StreamWriter sw = File.CreateText($@"{Application.StartupPath}\supermarketdata.txt"))
-            {
-                sw.WriteLine($"{supermarket.Nombre}");
-                sw.WriteLine($"{supermarket.CUIT}");
-                sw.WriteLine($"{supermarket.Direccion}");
-            }
-        }
-        public static void ModifyData (string table, List<string> columns, List<string> data, string typeOfData, string id)
+        public static void ModifyData (string table, List<string> columns, List<string> data, string typeOfData, string id) //Modify data in a table of a sqlserver databse
         {
             using SqlConnection sqlConnection = new(_ConnectionString);
             sqlConnection.Open();
@@ -92,7 +72,7 @@ namespace Los_dos_chinos
             CleanTxtBoxes();
             MessageBox.Show($"{typeOfData} modificado", "Operación satisfactoria", MessageBoxButtons.OK);
         }
-        public static void DeleteData (string table, string id, string idValue)
+        public static void DeleteData (string table, string id, string idValue) //Delete data in a table of a sqlserver databse
         {
             using SqlConnection sqlConnection = new(_ConnectionString);
             sqlConnection.Open();
@@ -102,9 +82,32 @@ namespace Los_dos_chinos
             CleanTxtBoxes();
             firstTime = true;
         }
-        public static bool TxtBsNotEmpty () { if (textBoxes.FirstOrDefault(x => x.Text == string.Empty) == null) { return true; } else { return false; } }
-        public static void CleanTxtBoxes () { foreach (var txtB in textBoxes) { txtB.Clear(); } }
-        public static void AddSession ()
+        public static void ReadSupermarketData ()
+        {
+            using (StreamReader sr = File.OpenText($@"{ubicacionProyecto}\supermarketdata.txt"))
+            {
+                string str = sr.ReadToEnd();
+                string[] separators = { "\r\n" };
+                string[] dataSeparated = str.Split(separators, System.StringSplitOptions.None);
+                if (dataSeparated.Length >= 3)
+                {
+                    ServerManager.supermarket.Nombre = dataSeparated[0]; ServerManager.supermarket.CUIT = dataSeparated[1];
+                    ServerManager.supermarket.Direccion = dataSeparated[2];
+                }
+            }
+        }
+        public static void UpdateSupermarketData ()
+        {
+            using (StreamWriter sw = File.CreateText($@"{ubicacionProyecto}\supermarketdata.txt"))
+            {
+                sw.WriteLine($"{supermarket.Nombre}");
+                sw.WriteLine($"{supermarket.CUIT}");
+                sw.WriteLine($"{supermarket.Direccion}");
+            }
+        }
+        public static bool TxtBsNotEmpty () { if (textBoxes.FirstOrDefault(x => x.Text == string.Empty) == null) { return true; } else { return false; } } //Used to check if the textBoxes are empty or not
+        public static void CleanTxtBoxes () { foreach (var txtB in textBoxes) { txtB.Clear(); } } //Clean the textBoxes
+        public static void AddSession () //Add current session to the sessions table on the database
         {
             using SqlConnection sqlConnection = new(_ConnectionString);
             sqlConnection.Open();
@@ -121,7 +124,7 @@ namespace Los_dos_chinos
             //CleanTxtBoxes();
             //MessageBox.Show($"{typeOfData} agregado", "Operación satisfactoria", MessageBoxButtons.OK);
         }
-        public static void ManageSales (string columns, List<string> data)
+        public static void ManageSales (string columns, List<string> data) //Storage a sale and set it's saleID based on last sale's ID
         {
             string nextSaleID;
             using SqlConnection sqlConnection = new(_ConnectionString);

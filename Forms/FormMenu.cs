@@ -18,7 +18,6 @@ namespace Los_dos_chinos.OtherForms
 {
     public partial class FormMenu : Form
     {
-        public FormMenu() { InitializeComponent(); }
 
         #region Sales REGION
         void dgViewCarrito_KeyPress (object sender, KeyPressEventArgs e)
@@ -155,8 +154,7 @@ namespace Los_dos_chinos.OtherForms
                 Document doc = new(rect, 10, 10, 10, 10);
                 PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(saveFileDiag.FileName, FileMode.Create));
                 doc.Open();
-                System.Drawing.Image pImage = System.Drawing.Image.FromFile(@"C:\Users\brand\OneDrive\Desktop\Logo.png");
-                iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(pImage, System.Drawing.Imaging.ImageFormat.Png);
+                iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(ServerManager.logo, System.Drawing.Imaging.ImageFormat.Png);
                 image.ScalePercent(20);
                 image.Alignment = Element.ALIGN_LEFT;
                 doc.Add(image);
@@ -230,11 +228,11 @@ namespace Los_dos_chinos.OtherForms
         }
         #endregion
 
-        #region Escaner código de barras
+        #region Scan barcode
         decimal articleID;
         FilterInfoCollection FilterInfoCollection;
         VideoCaptureDevice captureDevice;
-        void checkBUsarLCB_CheckedChanged (object sender, EventArgs e)
+        void checkBUseBarCodeScanner_CheckedChanged (object sender, EventArgs e) //Check if BarCodeScanner'ckeckBox is checked or  not
         {
             if (checkBUsarLCB.Checked && FilterInfoCollection.Count > 0)
             {
@@ -245,7 +243,7 @@ namespace Los_dos_chinos.OtherForms
             }
             else { timer1.Stop(); captureDevice.Stop(); pictureBECD.Image = null; }
         }
-        void CaptureDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        void CaptureDevice_NewFrame (object sender, NewFrameEventArgs eventArgs)
         {
             pictureBECD.Image = (Bitmap)eventArgs.Frame.Clone();
         }
@@ -302,8 +300,8 @@ namespace Los_dos_chinos.OtherForms
         }
         #endregion
         
-        #region Paneles
-        void BtnSalesMenu_Click (object sender, EventArgs e)
+        #region Panels_REGION
+        void BtnSalesMenu_Click (object sender, EventArgs e) //Display Sales menu
         {//The Sales panel is displayed and the articles are loaded into de artices table
             pnlSales.BringToFront();
             using SqlConnection sqlConnection = new(ServerManager._ConnectionString);
@@ -320,7 +318,7 @@ namespace Los_dos_chinos.OtherForms
             }
             sqlCommand.Dispose(); sqlDataReader.Dispose();
         }
-        void BtnUsersMenu_Click (object sender, EventArgs e)
+        void BtnUsersMenu_Click (object sender, EventArgs e) //Display Users menu
         {
             pnlUsers.BringToFront(); // Se muestra el panel de usuarios y se cargan enstos en el dgviewUsers
             ServerManager.tipo = "User";
@@ -356,7 +354,7 @@ namespace Los_dos_chinos.OtherForms
             dgviewSessions.DataSource = _Sessions;
             sqlCommand.Dispose(); sqlDataReader.Dispose();
         }
-        void BtnArticlesMenu_Click (object sender, EventArgs e)
+        void BtnArticlesMenu_Click (object sender, EventArgs e) //Display Articles menu
         {
             pnlArticles.BringToFront();
             ServerManager.tipo = "Article";
@@ -384,7 +382,7 @@ namespace Los_dos_chinos.OtherForms
             while (sqlDataReader.Read()) { cmbBProveedor.Items.Add(sqlDataReader.GetValue(1).ToString()); }
             sqlCommand.Dispose(); sqlDataReader.Dispose();
         }
-        void BtnSuppliersMenu_Click (object sender, EventArgs e)
+        void BtnSuppliersMenu_Click (object sender, EventArgs e) //Display suppliers menu
         {
             pnlSuppliers.BringToFront();
             ServerManager.tipo = "Supplier";
@@ -406,19 +404,19 @@ namespace Los_dos_chinos.OtherForms
             ServerManager.CleanTxtBoxes();
             sqlCommand.Dispose(); sqlDataReader.Dispose();
         }
-        void BtnSuperMenu_Click (object sender, EventArgs e)
+        void BtnSuperMenu_Click (object sender, EventArgs e) //Display supermarket menu
         {
             pnlSupermarket.BringToFront();
             txtBSuperCUIT.Text = ServerManager.supermarket.CUIT;
             txtBSuperName.Text = ServerManager.supermarket.Nombre;
             txtBSuperAddress.Text = ServerManager.supermarket.Direccion;
         }
-        void BtnSalir_Click (object sender, EventArgs e) { ServerManager.formLogIn.ShowNewLogIn(); }
-        void BtnVigilanciaMenu_Click (object sender, EventArgs e) { FormSurveillanceCam formSurveillance = new(); formSurveillance.Show(); }
+        void BtnSurveillanceMenu_Click (object sender, EventArgs e) { FormSurveillanceCam formSurveillance = new(); formSurveillance.Show(); } //Display Surveillance menu as a separated window
+        void BtnQuit_Click (object sender, EventArgs e) { ServerManager.formLogIn.ShowNewLogIn(); } //Close the session and returns to LogIn Menu
         #endregion
 
-        #region Users_Region
-        void BtnUserAdd_Click (object sender, EventArgs e)
+        #region Users_REGION
+        void BtnUserAdd_Click (object sender, EventArgs e) // Add a user
         {
             ServerManager.textBoxes = new() { txtBName, txtBPassword, txtBAccess, txtBEmail, txtBCellphone };
             if (ServerManager.TxtBsNotEmpty())
@@ -445,7 +443,7 @@ namespace Los_dos_chinos.OtherForms
             }
             else { MessageBox.Show("Hay espacios sin llenar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
         }
-        void BtnUserMod_Click (object sender, EventArgs e)
+        void BtnUserMod_Click (object sender, EventArgs e) // Modify a user
         {
             if (usersSelected.Count == 1)
             {
@@ -475,7 +473,7 @@ namespace Los_dos_chinos.OtherForms
             else if(usersSelected.Count > 1) { MessageBox.Show($"Seleccione solamente un usuario", "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error); }
             else { MessageBox.Show($"No se seleccionó ningún usuario", "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        void BtnUserDel_Click (object sender, EventArgs e) // Eliminar usuario/s
+        void BtnUserDel_Click (object sender, EventArgs e) // Delete user/s
         {
             if(usersSelected.Count >= 1)
             {
@@ -498,7 +496,7 @@ namespace Los_dos_chinos.OtherForms
             }
             else { MessageBox.Show($"No se seleccionó ningún usuario", "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        void dgviewUsers_SelectionChanged (object sender, EventArgs e)
+        void dgviewUsers_SelectionChanged (object sender, EventArgs e) //Update userSelected list
         {
             if (dgviewUsers.SelectedRows.Count == 1)
             {
@@ -534,8 +532,8 @@ namespace Los_dos_chinos.OtherForms
         }
         #endregion
 
-        #region Articles_Region
-        void BtnArticleAdd_Click (object sender, EventArgs e)
+        #region Articles_REGION
+        void BtnArticleAdd_Click (object sender, EventArgs e) //Add an article
         {
             ServerManager.textBoxes = new() { txtBCode, txtBDetail, txtBPresentation, txtBPurchasePrice, txtSalePrice,txtBStock};
             if (ServerManager.TxtBsNotEmpty())
@@ -563,7 +561,7 @@ namespace Los_dos_chinos.OtherForms
             }
             else { MessageBox.Show("Hay espacios sin llenar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
         }
-        void BtnArticleMod_Click (object sender, EventArgs e)
+        void BtnArticleMod_Click (object sender, EventArgs e) //Modify an article
         {
             if (articlesSelected.Count == 1)
             {
@@ -596,7 +594,7 @@ namespace Los_dos_chinos.OtherForms
             else if (articlesSelected.Count > 1) { MessageBox.Show($"Seleccione solamente un artículo", "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error); }
             else { MessageBox.Show($"No se seleccionó ningún artículo", "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        void BtnArticleDel_Click (object sender, EventArgs e)
+        void BtnArticleDel_Click (object sender, EventArgs e) // Delete article/s
         {
             if (articlesSelected.Count >= 1)
             {
@@ -619,7 +617,7 @@ namespace Los_dos_chinos.OtherForms
             }
             else { MessageBox.Show($"No se seleccionó ningún artículo", "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        void dgviewArticles_SelectionChanged (object sender, EventArgs e)
+        void dgviewArticles_SelectionChanged (object sender, EventArgs e) // Update articlesSelected list
         {
             if (dgviewArticles.SelectedRows.Count == 1)
             {
@@ -659,7 +657,7 @@ namespace Los_dos_chinos.OtherForms
                 articlesSelected = newArticlesSelected;
             }
         }
-        void BtnArticlesGenList_Click (object sender, EventArgs e)
+        void BtnArticlesGenList_Click (object sender, EventArgs e) //Generate pdf that contains the selected articles
         {
             if (articlesSelected.Count >= 1)
             {
@@ -670,9 +668,7 @@ namespace Los_dos_chinos.OtherForms
                     Document doc = new(rect, 10, 10, 10, 10);
                     PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(saveFileDiag.FileName, FileMode.Create));
                     doc.Open();
-
-                    System.Drawing.Image pImage = System.Drawing.Image.FromFile(@"C:\Users\brand\OneDrive\Desktop\Logo.png");
-                    iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(pImage, System.Drawing.Imaging.ImageFormat.Png);
+                    iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(ServerManager.logo, System.Drawing.Imaging.ImageFormat.Png);
                     image.ScalePercent(20);
                     image.Alignment = Element.ALIGN_LEFT;
                     doc.Add(image);
@@ -701,7 +697,7 @@ namespace Los_dos_chinos.OtherForms
             }
             else { MessageBox.Show($"No se seleccionó ningún artículo", "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        void btnGenerarCB_Click(object sender, EventArgs e)
+        void BtnGenBarCode (object sender, EventArgs e) //Generate pdf that contains tha barcode of the selected article
         {
             if (dgViewArticulos.SelectedRows.Count == 0) MessageBox.Show($"No se seleccionó ningún artículo",
                 "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -736,8 +732,8 @@ namespace Los_dos_chinos.OtherForms
         }
         #endregion
 
-        #region Proveedores_Region
-        void BtnSupplierAdd_Click (object sender, EventArgs e)
+        #region Suppliers_REGION
+        void BtnSupplierAdd_Click (object sender, EventArgs e) //Add a new supplier
         {
             ServerManager.textBoxes = new() { txtBSupName, txtBSupCUIT, txtBSupEmail, txtBSupCellphone, txtBSupArea, txtBSupAddress };
             if (ServerManager.TxtBsNotEmpty())
@@ -763,7 +759,7 @@ namespace Los_dos_chinos.OtherForms
             }
             else { MessageBox.Show("Hay espacios sin llenar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
         }
-        void BtnSupplierMod_Click (object sender, EventArgs e)
+        void BtnSupplierMod_Click (object sender, EventArgs e) //Modify selected supplier
         {
             if (suppliersSelected.Count == 1)
             {
@@ -794,7 +790,7 @@ namespace Los_dos_chinos.OtherForms
             else if (suppliersSelected.Count > 1) { MessageBox.Show($"Seleccione solamente un proveedor", "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error); }
             else { MessageBox.Show($"No se seleccionó ningún proveedor", "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        void BtnSupplierDel_Click (object sender, EventArgs e)
+        void BtnSupplierDel_Click (object sender, EventArgs e) //Delete selected supplier/s
         {
             if (suppliersSelected.Count >= 1)
             {
@@ -817,7 +813,7 @@ namespace Los_dos_chinos.OtherForms
             }
             else { MessageBox.Show($"No se seleccionó ningún proveedor", "Operación fallida", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        void dgviewSuppliers_SelectionChanged (object sender, EventArgs e)
+        void dgviewSuppliers_SelectionChanged (object sender, EventArgs e) //Update selectedSuppliers list
         {
             if (dgviewSuppliers.SelectedRows.Count == 1)
             {
@@ -858,7 +854,7 @@ namespace Los_dos_chinos.OtherForms
             }
             else { suppliersSelected.Clear(); }
         }
-        void BtnSuppliersGenList_Click (object sender, EventArgs e)
+        void BtnSuppliersGenList_Click (object sender, EventArgs e) //Generate a pdf that contains a lis of selected suppliers
         {
             if (suppliersSelected.Count >= 1)
             {
@@ -869,13 +865,12 @@ namespace Los_dos_chinos.OtherForms
                     Document doc = new(rect, 10, 10, 10, 10);
                     PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(saveFileDiag.FileName, FileMode.Create));
                     doc.Open();
-
-                    System.Drawing.Image pImage = System.Drawing.Image.FromFile(@"C:\Users\brand\OneDrive\Desktop\Logo.png");
-                    iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(pImage, System.Drawing.Imaging.ImageFormat.Png);
+                    //Logo image
+                    iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(ServerManager.logo, System.Drawing.Imaging.ImageFormat.Png);
                     image.ScalePercent(20);
                     image.Alignment = Element.ALIGN_LEFT;
                     doc.Add(image);
-
+                    //table of selected suppliers
                     PdfPTable table = new(5) { WidthPercentage = 104 };
                     table.DefaultCell.HorizontalAlignment = Element.ALIGN_CENTER;
                     iTextSharp.text.Font font = new(iTextSharp.text.Font.FontFamily.TIMES_ROMAN, 11);
@@ -902,9 +897,11 @@ namespace Los_dos_chinos.OtherForms
         #endregion
 
         #region OtherStuff
-        List<User> usersSelected = new(); List<Article> articlesSelected = new(); List<Supplier> suppliersSelected = new();
-        void FormMenu_Load(object sender, EventArgs e)
+        List<User> usersSelected = new(); List<Article> articlesSelected = new(); List<Supplier> suppliersSelected = new(); // Lists of users, articles and suppliers selected.
+        public FormMenu() { InitializeComponent(); }
+        void FormMenu_Load (object sender, EventArgs e)
         {
+            ServerManager.logo = System.Drawing.Image.FromFile($@"{ServerManager.ubicacionProyecto}\Images\Logo.png"); // Set logo's image from file
             BtnSalesMenu_Click(null,null);
             FilterInfoCollection = new(FilterCategory.VideoInputDevice);
             timer1.Interval = 1500;
@@ -916,9 +913,9 @@ namespace Los_dos_chinos.OtherForms
                 BtnProveedoresMenu.Enabled = false;
                 BtnSuperMenu.Enabled = false;
             }
-            if (!File.Exists($@"{Application.StartupPath}\supermarketdata.txt"))
+            if (!File.Exists($@"{ServerManager.ubicacionProyecto}\supermarketdata.txt"))
             {
-                using (StreamWriter sw = File.CreateText($@"{Application.StartupPath}\supermarketdata.txt"))
+                using (StreamWriter sw = File.CreateText($@"{ServerManager.ubicacionProyecto}\supermarketdata.txt"))
                 {
                     sw.WriteLine($"{ServerManager.supermarket.Nombre}");
                     sw.WriteLine($"{ServerManager.supermarket.CUIT}");
@@ -927,8 +924,8 @@ namespace Los_dos_chinos.OtherForms
             }
             else { ServerManager.ReadSupermarketData(); }
         }
-        void timer2_Tick(object sender, EventArgs e) { txtHora.Text = DateTime.Now.ToLongTimeString(); } // Update textHora.text every second
-        void BtnSupermarketMod_Click(object sender, EventArgs e) // Modify the Supermarket's data
+        void timer2_Tick (object sender, EventArgs e) { txtHora.Text = DateTime.Now.ToLongTimeString(); } // Update textHora.text every second
+        void BtnSupermarketMod_Click (object sender, EventArgs e) // Modify the Supermarket's data
         {
             Supermarket newSupermarket = new(txtBSuperCUIT.Text, txtBSuperName.Text, txtBSuperAddress.Text);
             SupermarketVal validator = new();
@@ -947,7 +944,7 @@ namespace Los_dos_chinos.OtherForms
                 MessageBox.Show(message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-        void BtnTicketsGenList_Click(object sender, EventArgs e) // Generate List of tickets bewtween two dates
+        void BtnTicketsGenList_Click (object sender, EventArgs e) // Generate List of tickets bewtween two dates
         {
             using SaveFileDialog saveFileDiag = new() { Filter = "PDF file|*.pdf", ValidateNames = true };
             if (saveFileDiag.ShowDialog() == DialogResult.OK)
@@ -956,8 +953,7 @@ namespace Los_dos_chinos.OtherForms
                 PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(saveFileDiag.FileName, FileMode.Create));
                 doc.Open();
 
-                System.Drawing.Image pImage = System.Drawing.Image.FromFile(@"C:\Users\brand\OneDrive\Desktop\Logo.png");
-                iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(pImage, System.Drawing.Imaging.ImageFormat.Png);
+                iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(ServerManager.logo, System.Drawing.Imaging.ImageFormat.Png);
                 image.ScalePercent(20);
                 image.Alignment = Element.ALIGN_LEFT;
                 doc.Add(image);

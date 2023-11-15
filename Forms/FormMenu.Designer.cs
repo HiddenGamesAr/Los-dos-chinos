@@ -448,7 +448,7 @@
             this.checkBUsarLCB.TabIndex = 9;
             this.checkBUsarLCB.Text = "Usar lector CB";
             this.checkBUsarLCB.UseVisualStyleBackColor = true;
-            this.checkBUsarLCB.CheckedChanged += new System.EventHandler(this.checkBUsarLCB_CheckedChanged);
+            this.checkBUsarLCB.CheckedChanged += new System.EventHandler(this.checkBUseBarCodeScanner_CheckedChanged);
             // 
             // pictureBECD
             // 
@@ -1530,7 +1530,7 @@
             this.BtnVigilancia.Text = "VIGILANCIA";
             this.BtnVigilancia.TextColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(150)))), ((int)(((byte)(243)))));
             this.BtnVigilancia.UseVisualStyleBackColor = false;
-            this.BtnVigilancia.Click += new System.EventHandler(this.BtnVigilanciaMenu_Click);
+            this.BtnVigilancia.Click += new System.EventHandler(this.BtnSurveillanceMenu_Click);
             // 
             // BtnArticlesMenu
             // 
@@ -1656,7 +1656,7 @@
             this.btnSalir.Text = "SALIR";
             this.btnSalir.TextColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(150)))), ((int)(((byte)(243)))));
             this.btnSalir.UseVisualStyleBackColor = false;
-            this.btnSalir.Click += new System.EventHandler(this.BtnSalir_Click);
+            this.btnSalir.Click += new System.EventHandler(this.BtnQuit_Click);
             // 
             // roundedBtn1
             // 
@@ -1716,7 +1716,7 @@
             this.btnGenerarCB.Text = "GENERAR CÓDIGO DE BARRAS";
             this.btnGenerarCB.TextColor = System.Drawing.Color.Yellow;
             this.btnGenerarCB.UseVisualStyleBackColor = false;
-            this.btnGenerarCB.Click += new System.EventHandler(this.btnGenerarCB_Click);
+            this.btnGenerarCB.Click += new System.EventHandler(this.BtnGenBarCode);
             // 
             // roundedBtn5
             // 
